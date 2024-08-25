@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -80,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         Button startBtn = findViewById(R.id.btn_start);
         RecyclerView rv = findViewById(R.id.rv);
         rv.setAdapter(adapter);
+        rv.setLayoutManager(new LinearLayoutManager((this)));
         startBtn.setText("click to start");
         startBtn.setOnClickListener(v -> {
             if (!BeaconSDK.isRunning()) {
@@ -147,21 +149,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private final DiffUtil.ItemCallback<MalltoBeacon> diffUtil = new DiffUtil.ItemCallback<MalltoBeacon>() {
-        @Override
-        public boolean areItemsTheSame(@NonNull MalltoBeacon oldItem, @NonNull MalltoBeacon newItem) {
-            return false;
-        }
 
-        @Override
-        public boolean areContentsTheSame(@NonNull MalltoBeacon oldItem, @NonNull MalltoBeacon newItem) {
-            return false;
-        }
-    };
-    class Adapter extends ListAdapter<MalltoBeacon,Holder> {
+    static class Adapter extends ListAdapter<MalltoBeacon, Holder> {
 
         protected Adapter() {
-            super(diffUtil);
+            super(new DiffUtil.ItemCallback<MalltoBeacon>() {
+                @Override
+                public boolean areItemsTheSame(@NonNull MalltoBeacon oldItem, @NonNull MalltoBeacon newItem) {
+                    return false;
+                }
+
+                @Override
+                public boolean areContentsTheSame(@NonNull MalltoBeacon oldItem, @NonNull MalltoBeacon newItem) {
+                    return false;
+                }
+            });
         }
 
         @NonNull
@@ -182,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
         TextView tv1;
         TextView tv2;
+
         public Holder(@NonNull View itemView) {
             super(itemView);
             tv1 = itemView.findViewById(android.R.id.text1);

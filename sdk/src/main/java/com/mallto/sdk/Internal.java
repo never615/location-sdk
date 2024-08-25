@@ -54,14 +54,22 @@ public class Internal {
                 lastReportTs = SystemClock.elapsedRealtime();
                 List<MalltoBeacon> malltoBeacons = convertToMallToBeacons(supportedBeacons);
                 HttpUtil.upload(malltoBeacons);
-                handler.post(() -> callback.onRangingBeacons(malltoBeacons));
+                handler.post(() -> {
+                    if (callback != null) {
+                        callback.onRangingBeacons(malltoBeacons);
+                    }
+                });
                 MtLog.i("upload... size=" + supportedBeacons.size());
             } else {
                 if (SystemClock.elapsedRealtime() - lastReportTs > Global.regionTimeout) {
                     // advertising AOA
                     MtLog.d("AOA...");
                     advertising();
-                    handler.post(() -> callback.onAdvertising());
+                    handler.post(() -> {
+                        if (callback != null) {
+                            callback.onAdvertising();
+                        }
+                    });
                 }
             }
         });
@@ -98,14 +106,8 @@ public class Internal {
 
 
     private static void advertising() {
-        Beacon beacon = new Beacon.Builder().setId1("2f234454-cf6d-4a0f-adf2-f4911ba9ffa6")
-                .setId2("1")
-                .setId3("2")
-                .setBluetoothName("beacon")
-                .setBluetoothAddress("A4:07:B6:D9:B0:4C")
-                .setManufacturer(0x0118) // Radius Networks.  Change this for other beacon layouts
-                .setTxPower(-59)
-                .setDataFields(Arrays.asList(new Long[]{0l})) // Remove this for beacon layouts without d: fields
+        Beacon beacon = new Beacon.Builder().setId1("2f234454-cf6d-4a0f-adf2-f4911ba9ffa6").setId2("1").setId3("2").setBluetoothName("beacon").setBluetoothAddress("A4:07:B6:D9:B0:4C").setManufacturer(0x0118) // Radius Networks.  Change this for other beacon layouts
+                .setTxPower(-59).setDataFields(Arrays.asList(new Long[]{0l})) // Remove this for beacon layouts without d: fields
                 .build();
         BeaconParser parser = new BeaconParser().setBeaconLayout("m:2-3=beac,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25");
         int result = BeaconTransmitter.checkTransmissionSupported(Global.application);
