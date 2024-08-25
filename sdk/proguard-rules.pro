@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-repackageclasses com.mallto.sdk
+-keep class com.mallto.sdk.bean.** {*;}
+-keep class com.mallto.sdk.BeaconConfig {*;}
+-keep class com.mallto.sdk.BeaconConfig$Builder {*;}
+-keep class com.mallto.sdk.BeaconSDK {*;}
+-keep class com.mallto.sdk.BeaconSDK$Callback {*;}

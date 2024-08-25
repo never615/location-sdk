@@ -1,12 +1,21 @@
 # Beacon sdk 
 
-## dependencies
+## development
+### packaging
+```bash
+./gradlew sdk:bundleReleaseAr
+```
+---
+## How to use
+### 1.gradle文件中添加依赖
 ```gradle
 implementation("org.altbeacon:android-beacon-library:2.20.6")
 implementation("com.squareup.okhttp3:okhttp:4.12.0")
 implementation("com.google.code.gson:gson:2.11.0")
+// sdk
+implementation(files("./libs/beaconsdk-release.aar"))
 ```
-## init
+### 2.init
 
 ```java
 List<String> uuidList = new ArrayList<>();
@@ -37,7 +46,7 @@ private Notification createNotification() {
 }
 ```
 
-## 开启服务
+### 3.开启服务
 ```java
 BeaconSDK.start(new BeaconSDK.Callback() {
     @Override
@@ -52,4 +61,8 @@ BeaconSDK.start(new BeaconSDK.Callback() {
         Toast.makeText(MainActivity.this, "advertising aoa...", Toast.LENGTH_SHORT).show();
     }
 });
+```
+### 4.关闭服务
+```agsl
+BeaconSDK.stop()
 ```

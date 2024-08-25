@@ -9,13 +9,12 @@ android {
     defaultConfig {
         minSdk = 23
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -33,4 +32,5 @@ dependencies {
     implementation(libs.android.beacon.library)
     implementation(libs.okhttp)
     implementation(libs.gson)
+    implementation(libs.appcompat)
 }
