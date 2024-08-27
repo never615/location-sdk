@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.mallto.sdk.bean.MalltoBeacon;
 import com.mallto.sdk.bean.UploadBeaconModel;
 
-import org.altbeacon.beacon.Beacon;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -29,7 +26,7 @@ public class HttpUtil {
         uploadBeaconModel.beacons = beaconList;
         uploadBeaconModel.user_uuid = Global.userId;
 
-        MtLog.d("user_uuid:" + Global.userId);
+        MtLog.d("user_uuid:" + Global.userId + ",projectUUID=" + Global.projectUUID + ",domain=" + Global.domain);
 
         String requestData = new Gson().toJson(uploadBeaconModel);
 
@@ -38,10 +35,10 @@ public class HttpUtil {
         RequestBody body =
                 RequestBody.create(mediaType, requestData);
         Request request = new Request.Builder()
-                .url(Global.getServerDomain() + "/api/lbs/location_data")
+                .url(Global.domain + "/api/lbs/location_data")
                 .post(body)
 //			.addHeader("cache-control", "no-cache")
-                .addHeader("UUID", Global.PROJECT_UUID)
+                .addHeader("UUID", Global.projectUUID)
                 .addHeader("App-Id", "999")
                 .addHeader("Sign-Version", "999")
                 .build();

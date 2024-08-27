@@ -1,17 +1,9 @@
 package com.mallto.sdk;
 
-import android.bluetooth.le.AdvertiseCallback;
-import android.bluetooth.le.AdvertiseSettings;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.mallto.sdk.bean.MalltoBeacon;
 
-import org.altbeacon.beacon.Beacon;
-import org.altbeacon.beacon.BeaconParser;
-import org.altbeacon.beacon.BeaconTransmitter;
-
-import java.util.Arrays;
 import java.util.List;
 
 public class BeaconSDK {
@@ -21,6 +13,8 @@ public class BeaconSDK {
     public static void init(BeaconConfig config) {
         Internal.stop();
         Global.debug = config.isDebug();
+        Global.domain = config.getDomain();
+        Global.projectUUID = config.getProjectUUID();
         if (!TextUtils.isEmpty(config.getUserId())) {
             Global.userId = config.getUserId();
         }

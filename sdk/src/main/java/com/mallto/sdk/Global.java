@@ -18,14 +18,11 @@ public class Global {
     public static String userId = "unknown";
     // 支持的设备的uuid，按uuid过滤后，上传服务器，支持外部传入
     private static final List<String> mallToUuids = new ArrayList<>();
-    public static final String SERVER_URL_DEBUG = "https://test-easy.mall-to.com";
-    public static final String SERVER_URL_RELEASE = "https://integration-easy.mall-to.com";
-    public static final String PROJECT_UUID = "4024";
+
+    public static String domain;
+    public static String projectUUID = "";
     public static long scanInterval = 1100L;
     public static long advertisingInterval = 1100L;
-    static String getServerDomain() {
-        return debug ? SERVER_URL_DEBUG : SERVER_URL_RELEASE;
-    }
 
     public static Notification notification;
 
