@@ -20,6 +20,8 @@ import org.altbeacon.beacon.Region;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Internal {
@@ -89,12 +91,29 @@ public class Internal {
     private static List<Beacon> getSupportedBeacons(Collection<Beacon> beacons) {
         List<String> supportedUUIDList = Global.getSupportedUuidList();
         List<Beacon> result = new ArrayList<>();
-        for (Beacon beacon : beacons) {
-            if (supportedUUIDList.contains(beacon.getId1().toString().toUpperCase())) {
-                result.add(beacon);
+        if (supportedUUIDList.isEmpty()) {
+            // 未设置支持的设备uuidList
+            result.addAll(getTopDeviceList(new ArrayList<>(beacons), 200));
+        } else {
+            for (Beacon beacon : beacons) {
+                if (supportedUUIDList.contains(beacon.getId1().toString().toUpperCase())) {
+                    result.add(beacon);
+                }
             }
         }
+
         return result;
+    }
+
+    private static Collection<? extends Beacon> getTopDeviceList(List<Beacon> beacons, int size) {
+        Collections.sort(beacons, (o1, o2) -> o2.getRssi() - o1.getRssi());
+        if (beacons.size() > size) {
+            return beacons.subList(0, size);
+        } else {
+            return beacons;
+        }
+
+
     }
 
     public static void stop() {

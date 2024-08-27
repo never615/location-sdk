@@ -26,11 +26,6 @@ public class Global {
 
     public static Notification notification;
 
-    static {
-        // 大写字母
-        mallToUuids.add("FDA50693-A4E2-4FB1-AFCF-C6EB07647827");
-    }
-
     static void setSupportedUUIDList(@NonNull List<String> uuids) {
         mallToUuids.clear();
         for (String uuid : uuids) {
