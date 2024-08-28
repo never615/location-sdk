@@ -1,13 +1,18 @@
 package com.mallto.sdk;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseSettings;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
+
+import androidx.annotation.RequiresPermission;
+import androidx.core.app.ActivityCompat;
 
 import com.mallto.sdk.bean.MalltoBeacon;
 
@@ -26,10 +31,13 @@ import java.util.List;
 
 public class Internal {
 
+    private static final boolean BEACON = false;
+
     @SuppressLint("StaticFieldLeak")
     private static BeaconManager sBeaconManager;
     private static long lastReportTs = 0L;
     private static final Handler handler = new Handler(Looper.getMainLooper());
+    private static BeaconTransmitter transmitter;
 
     public static boolean isRunning() {
         return sBeaconManager != null && !sBeaconManager.getRangingNotifiers().isEmpty();
@@ -39,6 +47,8 @@ public class Internal {
         public static Region region = new Region("all-beacons-region", null, null, null);
     }
 
+
+    @RequiresPermission(Manifest.permission.BLUETOOTH_ADVERTISE)
     static void start(BeaconSDK.Callback callback) {
         BeaconParser parser = new BeaconParser().setBeaconLayout(Global.BEACON_LAYOUT);
         sBeaconManager = BeaconManager.getInstanceForApplication(Global.application);
@@ -55,6 +65,7 @@ public class Internal {
             if (!supportedBeacons.isEmpty()) {
                 // stopAdvertising() AOA
                 lastReportTs = SystemClock.elapsedRealtime();
+                stopAdvertising();
                 List<MalltoBeacon> malltoBeacons = convertToMallToBeacons(supportedBeacons);
                 HttpUtil.upload(malltoBeacons);
                 handler.post(() -> {
@@ -68,6 +79,7 @@ public class Internal {
                     // advertising AOA
                     MtLog.d("AOA...");
                     advertising();
+                    sBeaconManager.stopRangingBeacons(Instance.region);
                     handler.post(() -> {
                         if (callback != null) {
                             callback.onAdvertising();
@@ -80,6 +92,18 @@ public class Internal {
         Region region = Instance.region;
         lastReportTs = SystemClock.elapsedRealtime();
         sBeaconManager.startRangingBeacons(region);
+    }
+
+    @RequiresPermission(Manifest.permission.BLUETOOTH_ADVERTISE)
+    private static void stopAdvertising() {
+        if (BEACON) {
+            if (transmitter != null) {
+                transmitter.stopAdvertising();
+            }
+        } else {
+            BluetoothAOAAdvertiser.INSTANCE.stopAdvertising();
+        }
+
     }
 
     /**
@@ -125,21 +149,33 @@ public class Internal {
     }
 
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_ADVERTISE)
     private static void advertising() {
+        if (BEACON) {
+            advertisingBeacon();
+        } else {
+            BluetoothAOAAdvertiser.INSTANCE.startAdvertising();
+        }
+
+    }
+
+    private static void advertisingBeacon() {
         Beacon beacon = new Beacon.Builder()
-                .setId1("2f234454-cf6d-4a0f-adf2-f4911ba9ffa6")
-                .setId2("1")
-                .setId3("2")
-                .setBluetoothName("beacon")
-                .setBluetoothAddress("A4:07:B6:D9:B0:4C")
-                .setManufacturer(0x0118) // Radius Networks.  Change this for other beacon layouts
-                .setTxPower(-59)
-                .setDataFields(Arrays.asList(new Long[]{0l})) // Remove this for beacon layouts without d: fields
+                .setId1("000050bd-84b1-329f-149d-dd6fd3100f38")
+                .setId2("29229")
+                .setId3("43102")
+                .setManufacturer(0x004c)
+                .setBluetoothName("mall-1")
+//                .setManufacturer(0x0118) // Radius Networks.  Change this for other beacon layouts
+//                .setTxPower(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
+//                .setDataFields(Arrays.asList(new Long[]{0l})) // Remove this for beacon layouts without d: fields
                 .build();
-        BeaconParser parser = new BeaconParser().setBeaconLayout("m:2-3=beac,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25");
+        BeaconParser parser = new BeaconParser().setBeaconLayout(Global.BEACON_LAYOUT);
         int result = BeaconTransmitter.checkTransmissionSupported(Global.application);
         Log.d("beacon", "support advertising: " + result);
-        BeaconTransmitter transmitter = new BeaconTransmitter(Global.application, parser);
+        transmitter = new BeaconTransmitter(Global.application, parser);
+        transmitter.setAdvertiseTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH);
+        transmitter.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY);
         transmitter.startAdvertising(beacon, new AdvertiseCallback() {
             @Override
             public void onStartSuccess(AdvertiseSettings settingsInEffect) {
