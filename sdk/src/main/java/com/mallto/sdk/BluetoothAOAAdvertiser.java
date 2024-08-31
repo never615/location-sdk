@@ -29,7 +29,7 @@ public class BluetoothAOAAdvertiser {
 
     public BluetoothAOAAdvertiser() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothLeAdvertiser = bluetoothAdapter.getBluetoothLeAdvertiser();
+			mBluetoothLeAdvertiser = bluetoothAdapter.getBluetoothLeAdvertiser();
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_ADVERTISE)
@@ -46,7 +46,25 @@ public class BluetoothAOAAdvertiser {
 			String aoaData = AoaUtils.getAoaData();
 			byte[] aoaDataBytes = AoaUtils.hexStringToBytes(aoaData);
 
-			ByteBuffer byteBuffer = ByteBuffer.allocate(15).put(bytes, 0, 15);
+
+//			ByteBuffer byteBuffer = ByteBuffer.allocate(15).put(bytes, 0, 15);
+
+			//lance 标签:
+			//0x1E FF 01 00 01 00 00 00 00 4C 6D
+			//50BD 84B1 329F 149D DD6F D310 0F38 722D A85E C258
+			//
+			//lance 小程序:
+			//0x02 01 1A 1B 03 00 01 BA 1D CE C4
+			//
+			//50BD84B1329F149DDD6FD3100F38722DA85EC258
+			//
+			//14FF4C000100000000000000000000000020000000
+			//
+			//demo:
+			//0x1D FF 03 03 00 01 27 4E CE 62
+			//
+			//50BD84B1329F149DDD6FD3100F38722DA85EC258
+
         AdvertiseData advertiseData = new AdvertiseData.Builder()
                 .setIncludeDeviceName(false)
 //                .addServiceUuid(new ParcelUuid(ParcelUuid.fromString(BLUETOOTH_AOA_SERVICE_UUID).getUuid()))
@@ -66,6 +84,8 @@ public class BluetoothAOAAdvertiser {
             public void onStartFailure(int errorCode) {
                 super.onStartFailure(errorCode);
                 // 广播启动失败
+							  //1: 广播包太长
+							  MtLog.e("AdvertiseCallback onStartFailure:"+errorCode);
             }
         };
 
