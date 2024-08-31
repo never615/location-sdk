@@ -101,7 +101,7 @@ public class BluetoothAOAAdvertiser {
         byte[] deviceInfo = new byte[]{
                 (byte) 0xBB, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00
         };
-        manufacturerData.put(0, (byte) 0x1E); // 长度30
+        manufacturerData.put((byte) 0x1E); // 长度30
         manufacturerData.put((byte) 0xFF); // type
         manufacturerData.put(deviceInfo); // device info 7 bytes
         advA_deviceInfo.put(manufacturerData.array(), 0, 9);
