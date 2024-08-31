@@ -1,13 +1,15 @@
 package com.mallto.sdk;
 
+import static com.mallto.sdk.AoaUtils.checksumFunc;
+
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.mallto.sdk.bean.MalltoBeacon;
 
 import java.util.List;
 
 public class BeaconSDK {
-
 
 
     public static void init(BeaconConfig config) {
