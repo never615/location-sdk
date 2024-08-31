@@ -42,14 +42,19 @@ public class BluetoothAOAAdvertiser {
                 .build();
 
         byte[] bytes = getManufacturerDataBytes();
-        ByteBuffer byteBuffer = ByteBuffer.allocate(15).put(bytes, 0, 15);
+
+			String aoaData = AoaUtils.getAoaData();
+			byte[] aoaDataBytes = AoaUtils.hexStringToBytes(aoaData);
+
+			ByteBuffer byteBuffer = ByteBuffer.allocate(15).put(bytes, 0, 15);
         AdvertiseData advertiseData = new AdvertiseData.Builder()
-                .setIncludeDeviceName(true)
+                .setIncludeDeviceName(false)
 //                .addServiceUuid(new ParcelUuid(ParcelUuid.fromString(BLUETOOTH_AOA_SERVICE_UUID).getUuid()))
 //                .addManufacturerData(76, bytes) // 厂家id？
-                .addManufacturerData(76, byteBuffer.array()) // 厂家id？
+//					.addManufacturerData(76, byteBuffer.array()) // 厂家id？
+					.addManufacturerData(0x0303, aoaDataBytes) // 厂家id？
                 .build();
-        MtLog.d(Arrays.toString(byteBuffer.array()));
+//        MtLog.d(Arrays.toString(byteBuffer.array()));
         mAdvertiseCallback = new AdvertiseCallback() {
             @Override
             public void onStartSuccess(AdvertiseSettings settingsInEffect) {
