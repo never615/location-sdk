@@ -15,17 +15,14 @@ public class AoaUtils {
 
 
 	public static String getAoaData() {
-		String id1 = hexRandom(2);
-		String id2 = hexRandom(2);
-		String id3 = hexRandom(2);
-		String checkSum = checksumFunc("1B", "03", "00", "01", id1, id2, id3);
+//		String id1 = hexRandom(2);
+//		String id2 = hexRandom(2);
+//		String id3 = hexRandom(2);
 		String uuid = "0001";
-		String userData1 = id1+id2;
-		String userData2 = id3+checkSum;
-		int globalTag = Integer.parseInt(id1 + id2 + id3, 16);
-		String tagId = "000000" + id1 + id2 + id3;
-//		String aoaData = uuid + userData1 + userData2 + "50bd" + "84b1" + "329f" + "149d" + "dd6f" + "d310" + "0f38" + "722d" + "a85e" + "c258";
-		String aoaData = "03"+uuid + userData1 + userData2 + "50bd" + "84b1" + "329f" + "149d" + "dd6f" + "d310" + "0f38" + "722d" + "a85e" + "c258";
+		String deviceIdFromServer = "090909"; //16进制,服务器下发的设备唯一标识
+		String checkSum = checksumFunc("1B", "03", "00", "01", deviceIdFromServer);
+		String userData = deviceIdFromServer + checkSum;
+		String aoaData = "03" + uuid + userData + "50bd" + "84b1" + "329f" + "149d" + "dd6f" + "d310" + "0f38" + "722d" + "a85e" + "c258";
 //		String[] serviceUuids = new String[]{
 //			uuid, userData1, userData2, "bd50", "b184", "9f32", "9d14", "6fdd", "10d3", "380f", "2d72", "5ea8", "58c2"
 //		};
@@ -55,23 +52,19 @@ public class AoaUtils {
 	 * @param hex2
 	 * @param hex3
 	 * @param hex4
-	 * @param hex5
-	 * @param hex6
-	 * @param hex7
+	 * @param deviceIdFromServer
 	 * @return
 	 */
-	public static String checksumFunc(String hex1, String hex2, String hex3, String hex4, String hex5, String hex6, String hex7) {
+	public static String checksumFunc(String hex1, String hex2, String hex3, String hex4, String deviceIdFromServer) {
 		// 将十六进制字符串转换为十进制数字
 		int dec1 = Integer.parseInt(hex1, 16);
 		int dec2 = Integer.parseInt(hex2, 16);
 		int dec3 = Integer.parseInt(hex3, 16);
 		int dec4 = Integer.parseInt(hex4, 16);
-		int dec5 = Integer.parseInt(hex5, 16);
-		int dec6 = Integer.parseInt(hex6, 16);
-		int dec7 = Integer.parseInt(hex7, 16);
+		int decDeviceIdFromServer = Integer.parseInt(deviceIdFromServer, 16);
 
 		// 进行加法运算
-		int result = dec1 + dec2 + dec3 + dec4 + dec5 + dec6 + dec7;
+		int result = dec1 + dec2 + dec3 + dec4 + decDeviceIdFromServer;
 
 		// 将结果转换回十六进制字符串
 		String hexResult = Integer.toHexString(result).toUpperCase();
