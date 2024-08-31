@@ -19,6 +19,7 @@ public class BeaconSDK {
         Global.projectUUID = config.getProjectUUID();
         if (!TextUtils.isEmpty(config.getUserId())) {
             Global.userId = config.getUserId();
+            Internal.doAfterFetchSlug(null);
         }
         if (config.getDeviceUUIDList() != null && !config.getDeviceUUIDList().isEmpty()) {
             Global.setSupportedUUIDList(config.getDeviceUUIDList());
@@ -40,6 +41,10 @@ public class BeaconSDK {
 
     public static boolean isRunning() {
         return Internal.isRunning();
+    }
+
+    public static String getUserSlug(){
+        return "";
     }
 
     public interface Callback {

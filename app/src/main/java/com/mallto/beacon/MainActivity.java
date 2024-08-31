@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         List<String> uuidList = new ArrayList<>();
         // 支持的beacon uuid
         uuidList.add("FDA50693-A4E2-4FB1-AFCF-C6EB07647822");
-        BeaconSDK.init(new BeaconConfig.Builder(SERVER_DOMAIN_DEBUG, PROJECT_UUID)
+        BeaconSDK.init(new BeaconConfig.Builder(SERVER_DOMAIN_INTEGRATION, PROJECT_UUID)
                 .setDebug(true)
                 .setUserId("001")
                 .setDeviceUUIDList(uuidList)
