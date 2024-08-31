@@ -44,6 +44,7 @@ public class BluetoothAOAAdvertiser {
         byte[] bytes = getManufacturerDataBytes();
 
 			String aoaData = AoaUtils.getAoaData();
+			MtLog.i("aoaData:"+aoaData);
 			byte[] aoaDataBytes = AoaUtils.hexStringToBytes(aoaData);
 
 
