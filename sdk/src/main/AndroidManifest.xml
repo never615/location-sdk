@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
     <!-- Below is only needed if you want to emit beacon transmissions -->
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <application>
         <provider
             android:name="com.mallto.sdk.ContextProvider"

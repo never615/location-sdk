@@ -1,6 +1,7 @@
 package com.mallto.sdk;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.AdvertiseCallback;
@@ -15,6 +16,7 @@ import androidx.annotation.RequiresPermission;
 import org.altbeacon.beacon.BeaconManager;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public class BluetoothAOAAdvertiser {
 
@@ -40,13 +42,14 @@ public class BluetoothAOAAdvertiser {
                 .build();
 
         byte[] bytes = getManufacturerDataBytes();
-
+        ByteBuffer byteBuffer = ByteBuffer.allocate(15).put(bytes, 0, 15);
         AdvertiseData advertiseData = new AdvertiseData.Builder()
                 .setIncludeDeviceName(true)
 //                .addServiceUuid(new ParcelUuid(ParcelUuid.fromString(BLUETOOTH_AOA_SERVICE_UUID).getUuid()))
-                .addManufacturerData(76, bytes) // 厂家id？
+//                .addManufacturerData(76, bytes) // 厂家id？
+                .addManufacturerData(76, byteBuffer.array()) // 厂家id？
                 .build();
-
+        MtLog.d(Arrays.toString(byteBuffer.array()));
         mAdvertiseCallback = new AdvertiseCallback() {
             @Override
             public void onStartSuccess(AdvertiseSettings settingsInEffect) {
