@@ -61,10 +61,12 @@ public class AoaUtils {
 		int dec2 = Integer.parseInt(hex2, 16);
 		int dec3 = Integer.parseInt(hex3, 16);
 		int dec4 = Integer.parseInt(hex4, 16);
-		int decDeviceIdFromServer = Integer.parseInt(deviceIdFromServer, 16);
+		int dec5 = Integer.parseInt(deviceIdFromServer.substring(0, 2), 16);
+		int dec6 = Integer.parseInt(deviceIdFromServer.substring(2, 4), 16);
+		int dec7 = Integer.parseInt(deviceIdFromServer.substring(4, 6), 16);
 
 		// 进行加法运算
-		int result = dec1 + dec2 + dec3 + dec4 + decDeviceIdFromServer;
+		int result = dec1 + dec2 + dec3 + dec4 + dec5 + dec6 + dec7;
 
 		// 将结果转换回十六进制字符串
 		String hexResult = Integer.toHexString(result).toUpperCase();
