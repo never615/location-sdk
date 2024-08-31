@@ -24,7 +24,8 @@ public class AoaUtils {
 		String userData2 = id3+checkSum;
 		int globalTag = Integer.parseInt(id1 + id2 + id3, 16);
 		String tagId = "000000" + id1 + id2 + id3;
-		String aoaData = uuid + userData1 + userData2 + "50bd" + "84b1" + "329f" + "149d" + "dd6f" + "d310" + "0f38" + "722d" + "a85e" + "c258";
+//		String aoaData = uuid + userData1 + userData2 + "50bd" + "84b1" + "329f" + "149d" + "dd6f" + "d310" + "0f38" + "722d" + "a85e" + "c258";
+		String aoaData = "03"+uuid + userData1 + userData2 + "50bd" + "84b1" + "329f" + "149d" + "dd6f" + "d310" + "0f38" + "722d" + "a85e" + "c258";
 //		String[] serviceUuids = new String[]{
 //			uuid, userData1, userData2, "bd50", "b184", "9f32", "9d14", "6fdd", "10d3", "380f", "2d72", "5ea8", "58c2"
 //		};

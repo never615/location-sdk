@@ -55,14 +55,10 @@ public class BluetoothAOAAdvertiser {
 			//
 			//lance 小程序:
 			//0x02 01 1A 1B 03 00 01 BA 1D CE C4
-			//
 			//50BD84B1329F149DDD6FD3100F38722DA85EC258
 			//
-			//14FF4C000100000000000000000000000020000000
-			//
-			//demo:
+			//android demo:
 			//0x1D FF 03 03 00 01 27 4E CE 62
-			//
 			//50BD84B1329F149DDD6FD3100F38722DA85EC258
 
         AdvertiseData advertiseData = new AdvertiseData.Builder()
@@ -70,7 +66,7 @@ public class BluetoothAOAAdvertiser {
 //                .addServiceUuid(new ParcelUuid(ParcelUuid.fromString(BLUETOOTH_AOA_SERVICE_UUID).getUuid()))
 //                .addManufacturerData(76, bytes) // 厂家id？
 //					.addManufacturerData(76, byteBuffer.array()) // 厂家id？
-					.addManufacturerData(0x0303, aoaDataBytes) // 厂家id？
+					.addManufacturerData(0x1b03, aoaDataBytes) // 厂家id？
                 .build();
 //        MtLog.d(Arrays.toString(byteBuffer.array()));
         mAdvertiseCallback = new AdvertiseCallback() {
