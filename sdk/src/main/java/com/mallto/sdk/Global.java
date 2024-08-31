@@ -7,6 +7,9 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class Global {
     public static boolean debug = false;
@@ -25,6 +28,16 @@ public class Global {
     public static long advertisingInterval = 1100L;
 
     public static Notification notification;
+
+    private static final Map<String, String> userSlugMap = new ConcurrentHashMap<>();
+
+    public static void setSlug(String userId, String slug) {
+        userSlugMap.put(userId, slug);
+    }
+
+    public static String getSlug(String userId) {
+        return userSlugMap.get(userId);
+    }
 
     static void setSupportedUUIDList(@NonNull List<String> uuids) {
         mallToUuids.clear();

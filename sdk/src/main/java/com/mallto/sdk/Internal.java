@@ -9,12 +9,15 @@ import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.core.app.ActivityCompat;
 
 import com.mallto.sdk.bean.MalltoBeacon;
+import com.mallto.sdk.callback.FetchSlugCallback;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconManager;
@@ -150,13 +153,18 @@ public class Internal {
 
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_ADVERTISE)
+    @SuppressLint("MissingPermission")
     private static void advertising() {
         if (BEACON) {
             advertisingBeacon();
         } else {
-            BluetoothAOAAdvertiser.INSTANCE.startAdvertising();
+            doAfterFetchSlug(new Runnable() {
+                @Override
+                public void run() {
+                    BluetoothAOAAdvertiser.INSTANCE.startAdvertising();
+                }
+            });
         }
-
     }
 
     private static void advertisingBeacon() {
@@ -201,5 +209,29 @@ public class Internal {
             result.add(malltoBeacon);
         }
         return result;
+    }
+
+    public static void doAfterFetchSlug(@Nullable Runnable runnable) {
+        String userId = Global.userId;
+        String slug = Global.getSlug(userId);
+        if (TextUtils.isEmpty(slug)) {
+            HttpUtil.fetchUserSlug(userId, new FetchSlugCallback() {
+                @Override
+                public void onSuccess(String slug) {
+                    if (runnable != null) {
+                        runnable.run();
+                    }
+                }
+
+                @Override
+                public void onFail() {
+
+                }
+            });
+        } else {
+            if (runnable != null) {
+                runnable.run();
+            }
+        }
     }
 }
