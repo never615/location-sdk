@@ -82,7 +82,6 @@ public class Internal {
                     // advertising AOA
                     MtLog.d("AOA...");
                     advertising();
-                    sBeaconManager.stopRangingBeacons(Instance.region);
                     handler.post(() -> {
                         if (callback != null) {
                             callback.onAdvertising();
@@ -99,6 +98,7 @@ public class Internal {
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_ADVERTISE)
     private static void stopAdvertising() {
+        isAdvertising = false;
         if (BEACON) {
             if (transmitter != null) {
                 transmitter.stopAdvertising();
@@ -151,10 +151,15 @@ public class Internal {
         }
     }
 
+    private static boolean isAdvertising = false;
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_ADVERTISE)
     @SuppressLint("MissingPermission")
     private static void advertising() {
+        if (isAdvertising) {
+            return;
+        }
+        isAdvertising = true;
         if (BEACON) {
             advertisingBeacon();
         } else {
