@@ -50,13 +50,10 @@ public class Internal {
             // 解绑username 调用接口解除userid 和设备的绑定
             Global.userId = "unknown";
             Global.slug = null;
-            unBindUserId();
+            bindUserId("");
         } else {
             Global.userId = userId;
-            if (isRunning()) {
-                stop();
-                start(userId, callback);
-            }
+            bindUserId(userId);
         }
     }
 
@@ -258,8 +255,8 @@ public class Internal {
         }
     }
 
-    public static void unBindUserId() {
-        HttpUtil.fetchUserSlug("", new FetchSlugCallback() {
+    public static void bindUserId(String userId) {
+        HttpUtil.fetchUserSlug(userId, new FetchSlugCallback() {
             @Override
             public void onSuccess(String slug) {
 
