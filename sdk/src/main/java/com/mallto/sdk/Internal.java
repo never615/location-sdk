@@ -4,8 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseSettings;
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -14,7 +12,6 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
-import androidx.core.app.ActivityCompat;
 
 import com.mallto.sdk.bean.MalltoBeacon;
 import com.mallto.sdk.callback.FetchSlugCallback;
@@ -26,36 +23,55 @@ import org.altbeacon.beacon.BeaconTransmitter;
 import org.altbeacon.beacon.Region;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
+@SuppressLint("MissingPermission")
 public class Internal {
 
     private static final boolean BEACON = false;
 
+    private static BeaconSDK.Callback callback;
     @SuppressLint("StaticFieldLeak")
     private static BeaconManager sBeaconManager;
     private static long lastReportTs = 0L;
-    private static final Handler handler = new Handler(Looper.getMainLooper());
     private static BeaconTransmitter transmitter;
 
     public static boolean isRunning() {
         return sBeaconManager != null && !sBeaconManager.getRangingNotifiers().isEmpty();
     }
 
+    public static void updateUserId(String userId) {
+        if (userId == null) {
+            return;
+        }
+        if ("unknown".equals(userId) || TextUtils.isEmpty(userId)) {
+            // 解绑username 调用接口解除userid 和设备的绑定
+            Global.userId = "unknown";
+            Global.removeSlug(userId);
+            unBindUserId();
+        } else {
+            Global.userId = userId;
+            if (isRunning()) {
+                stop();
+                start(userId, callback);
+            }
+        }
+    }
+
     static class Instance {
         public static Region region = new Region("all-beacons-region", null, null, null);
+        private static final Handler handler = new Handler(Looper.getMainLooper());
     }
 
 
-    @RequiresPermission(Manifest.permission.BLUETOOTH_ADVERTISE)
-    static void start(BeaconSDK.Callback callback) {
+    static void start(String userId, BeaconSDK.Callback callback) {
+        Internal.callback = callback;
         BeaconParser parser = new BeaconParser().setBeaconLayout(Global.BEACON_LAYOUT);
         sBeaconManager = BeaconManager.getInstanceForApplication(Global.application);
         sBeaconManager.getBeaconParsers().add(parser);
+        Global.userId = userId;
         long interval = Math.max(Global.scanInterval, 1100L);
         sBeaconManager.setForegroundScanPeriod(interval);
         sBeaconManager.setBackgroundBetweenScanPeriod(0L);
@@ -70,8 +86,8 @@ public class Internal {
                 lastReportTs = SystemClock.elapsedRealtime();
                 stopAdvertising();
                 List<MalltoBeacon> malltoBeacons = convertToMallToBeacons(supportedBeacons);
-                HttpUtil.upload(malltoBeacons);
-                handler.post(() -> {
+                doAfterFetchSlug(() -> HttpUtil.upload(Global.getSlug(Global.userId), malltoBeacons));
+                Instance.handler.post(() -> {
                     if (callback != null) {
                         callback.onRangingBeacons(malltoBeacons);
                     }
@@ -80,9 +96,12 @@ public class Internal {
             } else {
                 if (SystemClock.elapsedRealtime() - lastReportTs > Global.regionTimeout) {
                     // advertising AOA
+                    if (isAdvertising) {
+                        return;
+                    }
                     MtLog.d("AOA...");
                     advertising();
-                    handler.post(() -> {
+                    Instance.handler.post(() -> {
                         if (callback != null) {
                             callback.onAdvertising();
                         }
@@ -149,6 +168,8 @@ public class Internal {
             sBeaconManager.removeAllRangeNotifiers();
             sBeaconManager = null;
         }
+        callback = null;
+        stopAdvertising();
     }
 
     private static boolean isAdvertising = false;
@@ -156,9 +177,6 @@ public class Internal {
     @RequiresPermission(Manifest.permission.BLUETOOTH_ADVERTISE)
     @SuppressLint("MissingPermission")
     private static void advertising() {
-        if (isAdvertising) {
-            return;
-        }
         isAdvertising = true;
         if (BEACON) {
             advertisingBeacon();
@@ -238,5 +256,19 @@ public class Internal {
                 runnable.run();
             }
         }
+    }
+
+    public static void unBindUserId() {
+        HttpUtil.fetchUserSlug("", new FetchSlugCallback() {
+            @Override
+            public void onSuccess(String slug) {
+
+            }
+
+            @Override
+            public void onFail() {
+
+            }
+        });
     }
 }

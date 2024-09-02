@@ -25,7 +25,6 @@ public class Global {
     public static String domain;
     public static String projectUUID = "";
     public static long scanInterval = 1100L;
-    public static long advertisingInterval = 1100L;
 
     public static Notification notification;
 
@@ -33,6 +32,10 @@ public class Global {
 
     public static void setSlug(String userId, String slug) {
         userSlugMap.put(userId, slug);
+    }
+
+    public static void removeSlug(String userId) {
+        userSlugMap.remove(userId);
     }
 
     public static String getSlug(String userId) {
