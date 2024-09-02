@@ -9,9 +9,7 @@ public class BeaconConfig {
     private final String domain;
     private final String projectUUID;
     private final long scanInterval;
-    private final long aoaInterval;
     private final List<String> deviceUUIDList;
-    private final String userId;
     private final boolean debug;
 
     private final Notification notification;
@@ -20,9 +18,7 @@ public class BeaconConfig {
         this.domain = builder.domain;
         this.projectUUID = builder.projectUUID;
         this.scanInterval = builder.scanInterval;
-        this.aoaInterval = builder.aoaInterval;
         this.deviceUUIDList = builder.deviceUUIDList;
-        this.userId = builder.userId;
         this.debug = builder.debug;
         this.notification = builder.notification;
     }
@@ -31,9 +27,7 @@ public class BeaconConfig {
         private final String domain;
         private final String projectUUID;
         private long scanInterval;
-        private long aoaInterval;
         private List<String> deviceUUIDList;
-        private String userId;
         private boolean debug;
         private Notification notification;
 
@@ -50,20 +44,11 @@ public class BeaconConfig {
             return this;
         }
 
-        public Builder setAoaInterval(long aoaInterval) {
-            this.aoaInterval = aoaInterval;
-            return this;
-        }
-
         public Builder setDeviceUUIDList(List<String> deviceUUIDList) {
             this.deviceUUIDList = deviceUUIDList;
             return this;
         }
 
-        public Builder setUserId(String userId) {
-            this.userId = userId;
-            return this;
-        }
 
         public Builder setDebug(boolean debug) {
             this.debug = debug;
@@ -86,16 +71,8 @@ public class BeaconConfig {
         return scanInterval;
     }
 
-    public long getAoaInterval() {
-        return aoaInterval;
-    }
-
     public List<String> getDeviceUUIDList() {
         return deviceUUIDList;
-    }
-
-    public String getUserId() {
-        return userId;
     }
 
     public boolean isDebug() {

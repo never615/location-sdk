@@ -3,6 +3,8 @@ package com.mallto.sdk;
 import android.annotation.SuppressLint;
 import android.provider.Settings;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.mallto.sdk.bean.MalltoBeacon;
 import com.mallto.sdk.bean.UploadBeaconModel;
@@ -26,12 +28,12 @@ public class HttpUtil {
         public static final OkHttpClient CLIENT = new OkHttpClient().newBuilder().build();
     }
 
-    public static void upload(List<MalltoBeacon> beaconList) {
+    public static void upload(String slug, List<MalltoBeacon> beaconList) {
         UploadBeaconModel uploadBeaconModel = new UploadBeaconModel();
         uploadBeaconModel.beacons = beaconList;
-        uploadBeaconModel.user_uuid = Global.userId;
+        uploadBeaconModel.mac = slug;
 
-        MtLog.d("user_uuid:" + Global.userId + ",projectUUID=" + Global.projectUUID + ",domain=" + Global.domain);
+        MtLog.d("mac:" + slug + ",projectUUID=" + Global.projectUUID + ",domain=" + Global.domain);
 
         String requestData = new Gson().toJson(uploadBeaconModel);
 
@@ -52,12 +54,12 @@ public class HttpUtil {
 
         call.enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                MtLog.d("onFailure:" + e.toString());
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                MtLog.d("onFailure:" + e);
             }
 
             @Override
-            public void onResponse(Call call, Response response) {
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
                 MtLog.d("onResponse");
                 MtLog.d("http code:" + response.code());
             }
@@ -87,9 +89,12 @@ public class HttpUtil {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 MtLog.d("onResponse");
-                String string = response.body().string();
+                String string = null;
+                if (response.body() != null) {
+                    string = response.body().string();
+                }
                 MtLog.d("http code:" + response.code() + " " + string);
                 UserSlugResp slugResp = new Gson().fromJson(string, UserSlugResp.class);
                 Global.setSlug(Global.userId, slugResp.slug);
