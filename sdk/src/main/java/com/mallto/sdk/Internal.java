@@ -49,7 +49,7 @@ public class Internal {
         if ("unknown".equals(userId) || TextUtils.isEmpty(userId)) {
             // 解绑username 调用接口解除userid 和设备的绑定
             Global.userId = "unknown";
-            Global.removeSlug(userId);
+            Global.slug = null;
             unBindUserId();
         } else {
             Global.userId = userId;
@@ -86,7 +86,7 @@ public class Internal {
                 lastReportTs = SystemClock.elapsedRealtime();
                 stopAdvertising();
                 List<MalltoBeacon> malltoBeacons = convertToMallToBeacons(supportedBeacons);
-                doAfterFetchSlug(() -> HttpUtil.upload(Global.getSlug(Global.userId), malltoBeacons));
+                doAfterFetchSlug(() -> HttpUtil.upload(Global.slug, malltoBeacons));
                 Instance.handler.post(() -> {
                     if (callback != null) {
                         callback.onRangingBeacons(malltoBeacons);
@@ -236,7 +236,7 @@ public class Internal {
 
     public static void doAfterFetchSlug(@Nullable Runnable runnable) {
         String userId = Global.userId;
-        String slug = Global.getSlug(userId);
+        String slug = Global.slug;
         if (TextUtils.isEmpty(slug)) {
             HttpUtil.fetchUserSlug(userId, new FetchSlugCallback() {
                 @Override

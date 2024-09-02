@@ -19,6 +19,7 @@ public class Global {
     public static final String BEACON_LAYOUT = "m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24";
     // 外部传入/imei, 用于上传
     public static String userId = "unknown";
+    public static String slug;
     // 支持的设备的uuid，按uuid过滤后，上传服务器，支持外部传入
     private static final List<String> mallToUuids = new ArrayList<>();
 
@@ -27,20 +28,6 @@ public class Global {
     public static long scanInterval = 1100L;
 
     public static Notification notification;
-
-    private static final Map<String, String> userSlugMap = new ConcurrentHashMap<>();
-
-    public static void setSlug(String userId, String slug) {
-        userSlugMap.put(userId, slug);
-    }
-
-    public static void removeSlug(String userId) {
-        userSlugMap.remove(userId);
-    }
-
-    public static String getSlug(String userId) {
-        return userSlugMap.get(userId);
-    }
 
     static void setSupportedUUIDList(@NonNull List<String> uuids) {
         mallToUuids.clear();

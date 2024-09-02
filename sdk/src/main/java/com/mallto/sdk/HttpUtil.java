@@ -97,7 +97,7 @@ public class HttpUtil {
                 }
                 MtLog.d("http code:" + response.code() + " " + string);
                 UserSlugResp slugResp = new Gson().fromJson(string, UserSlugResp.class);
-                Global.setSlug(Global.userId, slugResp.slug);
+                Global.slug = slugResp.slug;
                 callback.onSuccess(slugResp.slug);
             }
         });

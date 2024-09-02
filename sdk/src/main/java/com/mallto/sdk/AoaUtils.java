@@ -19,7 +19,7 @@ public class AoaUtils {
 //		String id2 = hexRandom(2);
 //		String id3 = hexRandom(2);
 		String uuid = "0001";
-		String deviceIdFromServer = Global.getSlug(Global.userId); //16进制,服务器下发的设备唯一标识
+		String deviceIdFromServer = Global.slug; //16进制,服务器下发的设备唯一标识
 		String checkSum = checksumFunc("1B", "03", "00", "01", deviceIdFromServer);
 		String userData = deviceIdFromServer + checkSum;
 		String aoaData = "03" + uuid + userData + "50bd" + "84b1" + "329f" + "149d" + "dd6f" + "d310" + "0f38" + "722d" + "a85e" + "c258";
