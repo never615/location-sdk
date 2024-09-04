@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
         List<String> uuidList = new ArrayList<>();
         // 支持的beacon uuid
-        uuidList.add("FDA50693-A4E2-4FB1-AFCF-C6EB07647827");
+        uuidList.add("FDA50693-A4E2-4FB1-AFCF-C6EB07647826");
         BeaconSDK.init(new BeaconConfig.Builder(SERVER_DOMAIN_INTEGRATION, PROJECT_UUID)
                 .setDebug(true)
                 .setDeviceUUIDList(uuidList)
@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "advertising aoa...", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
     private Notification createNotification() {
