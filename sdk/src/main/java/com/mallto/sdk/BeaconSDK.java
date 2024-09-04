@@ -1,10 +1,5 @@
 package com.mallto.sdk;
 
-import static com.mallto.sdk.AoaUtils.checksumFunc;
-
-import android.text.TextUtils;
-import android.util.Log;
-
 import com.mallto.sdk.bean.MalltoBeacon;
 
 import java.util.List;
@@ -30,7 +25,7 @@ public class BeaconSDK {
         Internal.start(userId, callback);
     }
 
-    public static void updateUserId(String userId){Internal.updateUserId(userId);}
+    public static void updateBLEInfo(String userId){Internal.updateUserId(userId);}
     public static void stop() {
         Internal.stop();
     }
