@@ -63,12 +63,11 @@ public class Internal {
     }
 
 
-    static void start(String userId, BeaconSDK.Callback callback) {
+    static void start(BeaconSDK.Callback callback) {
         Internal.callback = callback;
         BeaconParser parser = new BeaconParser().setBeaconLayout(Global.BEACON_LAYOUT);
         sBeaconManager = BeaconManager.getInstanceForApplication(Global.application);
         sBeaconManager.getBeaconParsers().add(parser);
-        Global.userId = userId;
         long interval = Math.max(Global.scanInterval, 1100L);
         sBeaconManager.setForegroundScanPeriod(interval);
         sBeaconManager.setBackgroundBetweenScanPeriod(0L);

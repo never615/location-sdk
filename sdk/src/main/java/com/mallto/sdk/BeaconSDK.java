@@ -1,5 +1,7 @@
 package com.mallto.sdk;
 
+import android.text.TextUtils;
+
 import com.mallto.sdk.bean.MalltoBeacon;
 
 import java.util.List;
@@ -11,6 +13,10 @@ public class BeaconSDK {
         Internal.stop();
         Global.debug = config.isDebug();
         Global.domain = config.getDomain();
+        String userId = config.getUserId();
+        if (!TextUtils.isEmpty(userId)) {
+            Global.userId = userId;
+        }
         Global.projectUUID = config.getProjectUUID();
         if (config.getDeviceUUIDList() != null && !config.getDeviceUUIDList().isEmpty()) {
             Global.setSupportedUUIDList(config.getDeviceUUIDList());
@@ -21,8 +27,8 @@ public class BeaconSDK {
         }
     }
 
-    public static void start(String userId, Callback callback) {
-        Internal.start(userId, callback);
+    public static void start(Callback callback) {
+        Internal.start(callback);
     }
 
     public static void updateBLEInfo(String userId){Internal.updateUserId(userId);}

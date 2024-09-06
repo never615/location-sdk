@@ -11,7 +11,7 @@ public class BeaconConfig {
     private final long scanInterval;
     private final List<String> deviceUUIDList;
     private final boolean debug;
-
+    private final String userId;
     private final Notification notification;
 
     private BeaconConfig(Builder builder) {
@@ -21,6 +21,7 @@ public class BeaconConfig {
         this.deviceUUIDList = builder.deviceUUIDList;
         this.debug = builder.debug;
         this.notification = builder.notification;
+        this.userId = builder.userId;
     }
 
     public static class Builder {
@@ -30,6 +31,7 @@ public class BeaconConfig {
         private List<String> deviceUUIDList;
         private boolean debug;
         private Notification notification;
+        private String userId;
 
         public Builder(String domain, String projectUUID) {
             if (TextUtils.isEmpty(domain) || TextUtils.isEmpty(projectUUID)) {
@@ -52,6 +54,11 @@ public class BeaconConfig {
 
         public Builder setDebug(boolean debug) {
             this.debug = debug;
+            return this;
+        }
+
+        public Builder setUserId(String userId) {
+            this.userId = userId;
             return this;
         }
 
@@ -89,5 +96,9 @@ public class BeaconConfig {
 
     public String getProjectUUID() {
         return projectUUID;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 }
