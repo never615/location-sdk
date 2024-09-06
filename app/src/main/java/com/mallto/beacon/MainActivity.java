@@ -36,7 +36,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 
 
 	//---------- 测试环境 start--------------
@@ -131,9 +131,10 @@ public class MainActivity extends AppCompatActivity {
 		BeaconSDK.init(new BeaconConfig.Builder(SERVER_DOMAIN, PROJECT_UUID)
 			.setDebug(DEBUG)
 			.setDeviceUUIDList(uuidList)
+			.setUserId("001")
 			.setNotification(notification)
 			.build());
-		BeaconSDK.start("", new BeaconSDK.Callback() {
+		BeaconSDK.start(new BeaconSDK.Callback() {
 			@Override
 			public void onRangingBeacons(List<MalltoBeacon> beacons) {
 				adapter.submitList(beacons);
