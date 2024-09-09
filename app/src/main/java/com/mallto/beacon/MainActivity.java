@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 		BeaconSDK.init(new BeaconConfig.Builder(SERVER_DOMAIN, PROJECT_UUID)
 			.setDebug(DEBUG)
 			.setDeviceUUIDList(uuidList)
-			.setUserId("001")
+			.setUserName("001")
 			.setNotification(notification)
 			.build());
 		BeaconSDK.start(new BeaconSDK.Callback() {
