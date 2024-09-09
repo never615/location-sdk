@@ -57,8 +57,8 @@ public class BeaconConfig {
             return this;
         }
 
-        public Builder setUserId(String userId) {
-            this.userId = userId;
+        public Builder setUserName(String username) {
+            this.userId = username;
             return this;
         }
 
