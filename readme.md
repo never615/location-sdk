@@ -23,7 +23,7 @@ List<String> uuidList = new ArrayList<>();
 uuidList.add("FDA50693-A4E2-4FB1-AFCF-C6EB07647827");
 BeaconSDK.init(new BeaconConfig.Builder()
         .setDebug(true) // 测试/正式环境
-        .setUserId("001") // 用户id，imei在android新版本无法获取
+        .setUserName("001") // 用户id，imei在android新版本无法获取
         .setDeviceUUIDList(uuidList)
         .setNotification(notification) // target android 14+, 后台扫描需要传入通知
         .setScanInterval(1100L)  // 设置扫描频率，1100ms一次
