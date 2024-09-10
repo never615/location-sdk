@@ -38,6 +38,8 @@ public class Internal {
     private static long lastReportTs = 0L;
     private static BeaconTransmitter transmitter;
 
+    private static final BoundedQueue<Boolean> qualityQueue = new BoundedQueue<>(10);
+
     public static boolean isRunning() {
         return sBeaconManager != null && !sBeaconManager.getRangingNotifiers().isEmpty();
     }
@@ -77,10 +79,15 @@ public class Internal {
         sBeaconManager.addRangeNotifier((beacons, region) -> {
 
             List<Beacon> supportedBeacons = getSupportedBeacons(beacons);
+            // 是否存在信号强度>-90的beacon
+            // 队列保存每次扫描的质量，true的个数/qualityQueue.size
+            qualityQueue.add(checkQuality(supportedBeacons));
             if (!supportedBeacons.isEmpty()) {
                 // stopAdvertising() AOA
                 lastReportTs = SystemClock.elapsedRealtime();
-                stopAdvertising();
+                if (shouldStopAdvertising()) {
+                    stopAdvertising();
+                }
                 List<MalltoBeacon> malltoBeacons = convertToMallToBeacons(supportedBeacons);
                 doAfterFetchSlug(() -> HttpUtil.upload(Global.slug, malltoBeacons));
                 Instance.handler.post(() -> {
@@ -109,6 +116,32 @@ public class Internal {
         Region region = Instance.region;
         lastReportTs = SystemClock.elapsedRealtime();
         sBeaconManager.startRangingBeacons(region);
+    }
+
+    private static Boolean checkQuality(List<Beacon> supportedBeacons) {
+        for (Beacon beacon : supportedBeacons) {
+            if (beacon.getRssi() >= -90) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 切换到扫描这块的逻辑后面应该要优化一下，因为实际中即便距离信标很远偶尔一阵妖风吹过就扫到了。。。比如距离50m。。。
+     *
+     * 所以要优化成10s内扫到过三次。  并且rssi大于-90算作一次有效扫描
+     *
+     * 目前实现的不是10s，是10次扫描
+     */
+    private static boolean shouldStopAdvertising() {
+        int qualifiedCount = 0;
+        for (Boolean b : qualityQueue.getDeque()) {
+            if (b) {
+                qualifiedCount += 1;
+            }
+        }
+        return qualifiedCount >= 3;
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_ADVERTISE)
@@ -165,6 +198,7 @@ public class Internal {
             sBeaconManager = null;
         }
         callback = null;
+        qualityQueue.clear();
         stopAdvertising();
     }
 
