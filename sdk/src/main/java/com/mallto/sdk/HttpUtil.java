@@ -6,6 +6,7 @@ import android.provider.Settings;
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.mallto.sdk.bean.MalltoBeacon;
 import com.mallto.sdk.bean.UploadBeaconModel;
 import com.mallto.sdk.bean.UserSlugResp;
@@ -77,6 +78,7 @@ public class HttpUtil {
                 .addHeader("UUID", Global.projectUUID)
                 .addHeader("App-Id", "999")
                 .addHeader("Sign-Version", "999")
+                .addHeader("Accept", "application/json")
                 .build();
 
         Call call = Inner.CLIENT.newCall(request);
@@ -96,9 +98,19 @@ public class HttpUtil {
                     string = response.body().string();
                 }
                 MtLog.d("http code:" + response.code() + " " + string);
-                UserSlugResp slugResp = new Gson().fromJson(string, UserSlugResp.class);
-                Global.slug = slugResp.slug;
-                callback.onSuccess(slugResp.slug);
+                try {
+                    if (response.code() == 200) {
+                        UserSlugResp slugResp = new Gson().fromJson(string, UserSlugResp.class);
+                        Global.slug = slugResp.slug;
+                        callback.onSuccess(slugResp.slug);
+                    } else {
+                        callback.onFail();
+                    }
+                } catch (JsonSyntaxException e) {
+                    callback.onFail();
+
+                }
+
             }
         });
     }
