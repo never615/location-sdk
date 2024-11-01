@@ -144,6 +144,11 @@ public class MainActivity extends AppCompatActivity {
 			public void onAdvertising() {
 				Toast.makeText(MainActivity.this, "advertising aoa...", Toast.LENGTH_SHORT).show();
 			}
+
+			@Override
+			public void onError(String error) {
+				Toast.makeText(MainActivity.this, "error:" + error, Toast.LENGTH_SHORT).show();
+			}
 		});
 
 	}

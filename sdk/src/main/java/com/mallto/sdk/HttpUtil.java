@@ -87,7 +87,7 @@ public class HttpUtil {
             @Override
             public void onFailure(Call call, IOException e) {
                 MtLog.d("onFailure:" + e.toString());
-                callback.onFail();
+                callback.onFail("请求slug失败");
             }
 
             @Override
@@ -104,10 +104,10 @@ public class HttpUtil {
                         Global.slug = slugResp.slug;
                         callback.onSuccess(slugResp.slug);
                     } else {
-                        callback.onFail();
+                        callback.onFail("slug不合法");
                     }
                 } catch (JsonSyntaxException e) {
-                    callback.onFail();
+                    callback.onFail("数据解析失败");
 
                 }
 

@@ -48,6 +48,8 @@ public class BeaconSDK {
         void onRangingBeacons(List<MalltoBeacon> beacons);
 
         void onAdvertising();
+
+        default void onError(String error){}
     }
 
 }

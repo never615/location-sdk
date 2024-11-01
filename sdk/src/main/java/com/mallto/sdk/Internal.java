@@ -89,7 +89,17 @@ public class Internal {
                     stopAdvertising();
                 }
                 List<MalltoBeacon> malltoBeacons = convertToMallToBeacons(supportedBeacons);
-                doAfterFetchSlug(() -> HttpUtil.upload(Global.slug, malltoBeacons));
+                doAfterFetchSlug(new OnFetchSlugCallback() {
+                    @Override
+                    public void onSuccess() {
+                        HttpUtil.upload(Global.slug, malltoBeacons);
+                    }
+
+                    @Override
+                    public void onFail(String error) {
+                        callback.onError(error);
+                    }
+                });
                 Instance.handler.post(() -> {
                     if (callback != null) {
                         callback.onRangingBeacons(malltoBeacons);
@@ -211,10 +221,17 @@ public class Internal {
         if (BEACON) {
             advertisingBeacon();
         } else {
-            doAfterFetchSlug(new Runnable() {
+            doAfterFetchSlug(new OnFetchSlugCallback() {
                 @Override
-                public void run() {
+                public void onSuccess() {
                     BluetoothAOAAdvertiser.INSTANCE.startAdvertising();
+                }
+
+                @Override
+                public void onFail(String error) {
+                    if (callback != null) {
+                        callback.onError(error);
+                    }
                 }
             });
         }
@@ -264,28 +281,35 @@ public class Internal {
         return result;
     }
 
-    public static void doAfterFetchSlug(@Nullable Runnable runnable) {
+    public static void doAfterFetchSlug(@Nullable OnFetchSlugCallback callback) {
         String userId = Global.userId;
         String slug = Global.slug;
         if (TextUtils.isEmpty(slug)) {
             HttpUtil.fetchUserSlug(userId, new FetchSlugCallback() {
                 @Override
                 public void onSuccess(String slug) {
-                    if (runnable != null) {
-                        runnable.run();
+                    if (callback != null) {
+                        callback.onSuccess();
                     }
                 }
 
                 @Override
-                public void onFail() {
-
+                public void onFail(String reason) {
+                    if (callback != null) {
+                        callback.onFail(reason);
+                    }
                 }
             });
         } else {
-            if (runnable != null) {
-                runnable.run();
+            if (callback != null) {
+                callback.onSuccess();
             }
         }
+    }
+
+    public interface OnFetchSlugCallback {
+        void onSuccess();
+        void onFail(String error);
     }
 
     public static void bindUserId(String userId) {
@@ -296,7 +320,7 @@ public class Internal {
             }
 
             @Override
-            public void onFail() {
+            public void onFail(String reason) {
 
             }
         });
