@@ -26,7 +26,12 @@ import okhttp3.Response;
 public class HttpUtil {
 
     public static class Inner {
-        public static final OkHttpClient CLIENT = new OkHttpClient().newBuilder().build();
+        private static final OkHttpClient CLIENT = new OkHttpClient().newBuilder().build();
+        private static final OkHttpClient NO_VERIFY_CLIENT = NoVerify.getUnSafeOkhttpClient();
+
+        public static OkHttpClient getClient() {
+            return Global.ignoreCertification ? NO_VERIFY_CLIENT : CLIENT;
+        }
     }
 
     public static void upload(String slug, List<MalltoBeacon> beaconList) {
@@ -51,7 +56,7 @@ public class HttpUtil {
                 .addHeader("Sign-Version", "999")
                 .build();
 
-        Call call = Inner.CLIENT.newCall(request);
+        Call call = Inner.getClient().newCall(request);
 
         call.enqueue(new Callback() {
             @Override
@@ -81,7 +86,7 @@ public class HttpUtil {
                 .addHeader("Accept", "application/json")
                 .build();
 
-        Call call = Inner.CLIENT.newCall(request);
+        Call call = Inner.getClient().newCall(request);
 
         call.enqueue(new Callback() {
             @Override

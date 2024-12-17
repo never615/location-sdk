@@ -13,6 +13,7 @@ public class BeaconConfig {
     private final boolean debug;
     private final String userId;
     private final Notification notification;
+    private final boolean ignoreCertification;
 
     private BeaconConfig(Builder builder) {
         this.domain = builder.domain;
@@ -22,6 +23,7 @@ public class BeaconConfig {
         this.debug = builder.debug;
         this.notification = builder.notification;
         this.userId = builder.userId;
+        this.ignoreCertification = builder.ignoreCertification;
     }
 
     public static class Builder {
@@ -32,6 +34,7 @@ public class BeaconConfig {
         private boolean debug;
         private Notification notification;
         private String userId;
+        private boolean ignoreCertification;
 
         public Builder(String domain, String projectUUID) {
             if (TextUtils.isEmpty(domain) || TextUtils.isEmpty(projectUUID)) {
@@ -67,6 +70,12 @@ public class BeaconConfig {
             return this;
         }
 
+        public Builder setIgnoreCertification(boolean ignore) {
+            this.ignoreCertification = ignore;
+            return this;
+        }
+
+
         public BeaconConfig build() {
             return new BeaconConfig(this);
         }
@@ -100,5 +109,9 @@ public class BeaconConfig {
 
     public String getUserId() {
         return userId;
+    }
+
+    public boolean isIgnoreCertification() {
+        return ignoreCertification;
     }
 }

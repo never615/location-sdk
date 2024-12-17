@@ -29,6 +29,8 @@ public class Global {
 
     public static Notification notification;
 
+    public static boolean ignoreCertification = false;
+
     static void setSupportedUUIDList(@NonNull List<String> uuids) {
         mallToUuids.clear();
         for (String uuid : uuids) {

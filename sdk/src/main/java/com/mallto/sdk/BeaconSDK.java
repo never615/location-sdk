@@ -18,6 +18,7 @@ public class BeaconSDK {
             Global.userId = userId;
         }
         Global.projectUUID = config.getProjectUUID();
+        Global.ignoreCertification = config.isIgnoreCertification();
         if (config.getDeviceUUIDList() != null && !config.getDeviceUUIDList().isEmpty()) {
             Global.setSupportedUUIDList(config.getDeviceUUIDList());
         }
