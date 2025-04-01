@@ -92,7 +92,7 @@ public class HttpUtil {
             @Override
             public void onFailure(Call call, IOException e) {
                 MtLog.d("onFailure:" + e.toString());
-                callback.onFail("请求slug失败");
+                callback.onFail("请求slug失败" + e);
             }
 
             @Override
