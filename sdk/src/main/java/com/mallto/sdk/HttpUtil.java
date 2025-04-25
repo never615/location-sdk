@@ -13,6 +13,7 @@ import com.mallto.sdk.bean.UserSlugResp;
 import com.mallto.sdk.callback.FetchSlugCallback;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import okhttp3.Call;
@@ -92,7 +93,11 @@ public class HttpUtil {
             @Override
             public void onFailure(Call call, IOException e) {
                 MtLog.d("onFailure:" + e.toString());
-                callback.onFail("请求slug失败" + e);
+                if (e instanceof UnknownHostException) {
+                    callback.onFail("Network error. Failed to obtain the short identifier.");
+                } else {
+                    callback.onFail("请求slug失败" + e);
+                }
             }
 
             @Override

@@ -66,7 +66,25 @@ public class Internal {
 
 
     static void start(BeaconSDK.Callback callback) {
-        Internal.callback = callback;
+//        Internal.callback = callback;
+        doAfterFetchSlug(new OnFetchSlugCallback() {
+            @Override
+            public void onSuccess() {
+                startRangingOrAoa(callback);
+            }
+
+            @Override
+            public void onFail(String error) {
+                Instance.handler.post(() -> {
+                    if (callback != null) {
+                        callback.onError(error);
+                    }
+                });
+            }
+        });
+    }
+
+    private static void startRangingOrAoa(BeaconSDK.Callback callback) {
         BeaconParser parser = new BeaconParser().setBeaconLayout(Global.BEACON_LAYOUT);
         sBeaconManager = BeaconManager.getInstanceForApplication(Global.application);
         sBeaconManager.getBeaconParsers().add(parser);
@@ -89,17 +107,7 @@ public class Internal {
                     stopAdvertising();
                 }
                 List<MalltoBeacon> malltoBeacons = convertToMallToBeacons(supportedBeacons);
-                doAfterFetchSlug(new OnFetchSlugCallback() {
-                    @Override
-                    public void onSuccess() {
-                        HttpUtil.upload(Global.slug, malltoBeacons);
-                    }
-
-                    @Override
-                    public void onFail(String error) {
-                        callback.onError(error);
-                    }
-                });
+                HttpUtil.upload(Global.slug, malltoBeacons);
                 Instance.handler.post(() -> {
                     if (callback != null) {
                         callback.onRangingBeacons(malltoBeacons);
@@ -113,12 +121,12 @@ public class Internal {
                         return;
                     }
                     MtLog.d("AOA...");
-                    advertising();
                     Instance.handler.post(() -> {
                         if (callback != null) {
                             callback.onAdvertising();
                         }
                     });
+                    advertising();
                 }
             }
         });
@@ -221,19 +229,7 @@ public class Internal {
         if (BEACON) {
             advertisingBeacon();
         } else {
-            doAfterFetchSlug(new OnFetchSlugCallback() {
-                @Override
-                public void onSuccess() {
-                    BluetoothAOAAdvertiser.INSTANCE.startAdvertising();
-                }
-
-                @Override
-                public void onFail(String error) {
-                    if (callback != null) {
-                        callback.onError(error);
-                    }
-                }
-            });
+            BluetoothAOAAdvertiser.INSTANCE.startAdvertising();
         }
     }
 

@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
 //	public static final String IBEACON_UUID = "FDA50693-A4E2-4FB1-AFCF-C6EB07647826";
 
     private final Adapter adapter = new Adapter();
+    private Button startBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        Button startBtn = findViewById(R.id.btn_start);
+        startBtn = findViewById(R.id.btn_start);
         RecyclerView rv = findViewById(R.id.rv);
         rv.setAdapter(adapter);
         rv.setLayoutManager(new LinearLayoutManager((this)));
@@ -142,12 +143,13 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onAdvertising() {
-                Toast.makeText(MainActivity.this, "advertising aoa...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "advertising aoa...", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onError(String error) {
-                Toast.makeText(MainActivity.this, "error:" + error, Toast.LENGTH_SHORT).show();
+                startBtn.setText("click to start");
+                Toast.makeText(MainActivity.this, "error:" + error, Toast.LENGTH_LONG).show();
             }
         });
 
