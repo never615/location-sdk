@@ -16,6 +16,7 @@ public class BeaconSDK {
         String userId = config.getUserId();
         if (!TextUtils.isEmpty(userId)) {
             Global.userId = userId;
+            Global.slug = null;
         }
         Global.projectUUID = config.getProjectUUID();
         Global.ignoreCertification = config.isIgnoreCertification();
